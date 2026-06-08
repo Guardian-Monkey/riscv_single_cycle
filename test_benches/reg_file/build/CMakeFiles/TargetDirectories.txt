@@ -1,0 +1,3 @@
+/Users/paulitoad/Desktop/riscv-sc/test_benches/reg_file/build/CMakeFiles/Vreg_file_tb.dir
+/Users/paulitoad/Desktop/riscv-sc/test_benches/reg_file/build/CMakeFiles/edit_cache.dir
+/Users/paulitoad/Desktop/riscv-sc/test_benches/reg_file/build/CMakeFiles/rebuild_cache.dir

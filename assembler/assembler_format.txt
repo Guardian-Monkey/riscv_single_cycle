@@ -1,0 +1,36 @@
+This file includes the formatting I have chosen for the assembler to accept.
+Any other format is not supported; only the bare essentials will be.
+
+Instructions:
+    * All instructions in RV32I, except for FENCE, ECALL/EBREAK are supported.
+    * All parameters within an instruction must be separated by a single comma and space character. for
+      example:
+      add r1, r2, r3
+      lw t2, 0(t2)
+      addi t4, t1, -1
+      bgt t3, t4, search_done
+      Each of the above instructions' parameters are separated by a comma, and a space, with the exception of the lack
+      of a comma between the instruction, and the first parameter (e.g. addi t4).
+    * There may be arbitrary amounts of space characters at the front and the end of each line. 
+    * Only one newline character may be present at the end of each line.
+    * SLLI, SRLI, and SRAI instructions will not support using labels for shamt
+Data:
+    * The following data types are supported:
+        1. .byte           = 1 byte
+        2. .half or .hword = 2 bytes
+        3. .word           = 4 bytes
+        4. .dword          = 8 bytes
+    * All data requires a label to refer to it. If it is a data structure like an array, the appropriate label
+      is required to access elements.
+
+Comments:
+    * Comments are indicated with a pound symbol, or a semicolon. They can be inline, or on their own separate line.
+    * All comments are single-line comments, and do not stretch multiple lines.
+
+Labels:
+    * Labels may be on their own line, or on the same line as an instruction or data. There may be an arbitrary amount of
+      spacing between a label and the instruction/data which it is referring to.
+
+Modes:
+    * A mode must be chosen, either .data or .text, before any data or instruction is written. The assembler will fail
+      if this is not the case.

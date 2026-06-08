@@ -1,0 +1,1 @@
+/opt/homebrew/bin/cmake;-E;env;VERILATOR_ROOT=/opt/verilator;/opt/verilator/bin/verilator_bin;--compiler;clang;--prefix;Valu;--Mdir;/Users/paulitoad/Desktop/riscv-sc/test_benches/alu/build/CMakeFiles/Valu_tb.dir/Valu.dir;--make;json;--coverage;--sc;--trace-vcd;alu.v

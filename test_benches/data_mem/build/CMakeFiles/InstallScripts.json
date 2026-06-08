@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/paulitoad/Desktop/riscv-sc/test_benches/data_mem/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

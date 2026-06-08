@@ -1,0 +1,1 @@
+/opt/homebrew/bin/cmake;-E;env;VERILATOR_ROOT=/opt/verilator;/opt/verilator/bin/verilator_bin;--compiler;clang;--prefix;Vreg_file;--Mdir;/Users/paulitoad/Desktop/riscv-sc/test_benches/reg_file/build/CMakeFiles/Vreg_file_tb.dir/Vreg_file.dir;--make;json;--coverage;--sc;--trace-vcd;reg_file.v

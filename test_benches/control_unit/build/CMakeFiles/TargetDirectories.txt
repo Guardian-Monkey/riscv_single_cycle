@@ -1,0 +1,3 @@
+/Users/paulitoad/Desktop/riscv-sc/test_benches/control_unit/build/CMakeFiles/Vcontrol_unit_tb.dir
+/Users/paulitoad/Desktop/riscv-sc/test_benches/control_unit/build/CMakeFiles/edit_cache.dir
+/Users/paulitoad/Desktop/riscv-sc/test_benches/control_unit/build/CMakeFiles/rebuild_cache.dir

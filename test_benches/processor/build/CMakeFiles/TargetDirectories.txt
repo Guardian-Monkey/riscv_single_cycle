@@ -1,0 +1,3 @@
+/Users/paulitoad/Desktop/riscv-sc/test_benches/processor/build/CMakeFiles/Vrisc_v_tb.dir
+/Users/paulitoad/Desktop/riscv-sc/test_benches/processor/build/CMakeFiles/edit_cache.dir
+/Users/paulitoad/Desktop/riscv-sc/test_benches/processor/build/CMakeFiles/rebuild_cache.dir
