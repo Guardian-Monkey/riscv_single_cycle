@@ -325,7 +325,7 @@ def build_symbol_table(assembly):
                                 # be used in the future
         # check if instr
         elif mode == ".text":
-            instr_addr += 1 # addr moves 4 bytes for every instr; all are the same size
+            instr_addr += 2 # addr moves 4 bytes for every instr; all are the same size (two halfword positions)
     return symbol_table
 
 
@@ -335,7 +335,7 @@ def assemble(assembly, symbol_table):
     # and to choose the appropriate binary.
 
     data_mem = list() # byte-addressable; little endian
-    instr_mem = list() # word-addressable
+    instr_mem = list() # word-addressable; little endian, each instruction is two half-words
 
     instr_addr = 0
     mode = None
@@ -356,12 +356,14 @@ def assemble(assembly, symbol_table):
                 data_mem.extend(data) # append the new values into data_mem
             else: # mode == ".text"
                 instruction = assemble_instr(line[1:], symbol_table, instr_addr) # ignore the label for assembly
-                instr_mem.append(instruction)
-                instr_addr += 1
+                instr_mem.append(instruction & 0xFFFF)
+                instr_mem.append(instruction >> 16)
+                instr_addr += 2
         else:
             instruction = assemble_instr(line, symbol_table, instr_addr)
-            instr_mem.append(instruction)
-            instr_addr += 1
+            instr_mem.append(instruction & 0xFFFF)
+            instr_mem.append(instruction >> 16)
+            instr_addr += 2
     return data_mem, instr_mem
 
 
@@ -585,14 +587,14 @@ def write_data(memory, filepath):
 
 
 def write_instr(memory, filepath):
-    max_mem = 8192 # amount of mem cells in instr_mem (found within risc_v verilog module)
+    max_mem = 8192 * 2 # amount of mem cells in instr_mem (found within risc_v verilog module)
     padding = max_mem - len(memory)
     # pad the rest of memory with zeroes
     for _ in range(padding):
         memory.append(0)
     with open(filepath, "w") as file:
         for line in memory:
-            file.write(f"{line:08x}\n")
+            file.write(f"{line:04x}\n")
     return None
 
 
