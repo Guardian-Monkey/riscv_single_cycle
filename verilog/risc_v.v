@@ -9,9 +9,9 @@ module risc_v(
 );
 
     // instruction mem
-    reg [31:0] instr_mem [8191:0]; // 32-bit mem, 8192 cells; word addressable
+    reg [15:0] instr_mem [16383:0]; // 16-bit mem, 16384 cells; word addressable (little endian)
     // program counter
-    reg [12:0] pc;
+    reg [13:0] pc;
 
     // branch logic flags
     wire zero_flag, unsigned_less_than, signed_less_than;
@@ -51,23 +51,23 @@ module risc_v(
     initial begin
         // path is relative to where the simulation is ran (build directory)
         $readmemh("../../memory/instr.mem", instr_mem); // hex file; each line is an instruction
-        pc = 13'b0; // set pc point to start of instr_mem
+        pc = 14'b0; // set pc point to start of instr_mem
     end
 
     // MUX COMBINATIONAL DECISIONS
-    assign adder_in1 = branch_decision ? imm : 32'd1;
+    assign adder_in1 = branch_decision ? imm : 32'd2;
     assign reg_data_in = mux_reg == 0 ? ALU_out : (mux_reg == 1 ? adder_out : data_mem_out);
-    assign ALU_in1 = mux_ALU2 == 0 ? rs1_out : (mux_ALU2 == 1 ? 32'b0 : {19'b0, pc});
+    assign ALU_in1 = mux_ALU2 == 0 ? rs1_out : (mux_ALU2 == 1 ? 32'b0 : {18'b0, pc});
     assign ALU_in2 = mux_ALU1 ? imm : rs2_out;
 
     always @(posedge clk)
     begin
-        pc <= mux_PC ? adder_out[12:0] : ALU_out[12:0];
+        pc <= mux_PC ? adder_out[13:0] : ALU_out[13:0];
     end
 
     // ====== HELPER MODULE ======
 
-    helper_adder ADDER(adder_in1, {19'b0, pc}, 1'b0, adder_out, adder_cout);
+    helper_adder ADDER(adder_in1, {18'b0, pc}, 1'b0, adder_out, adder_cout);
 
     branch_decoder BRANCH_DECODER(
         zero_flag,
@@ -83,7 +83,7 @@ module risc_v(
     control_unit CONTROL_UNIT(
         // ===== INPUTS =====
         // current instruction
-        .instr(instr_mem[pc]),
+        .instr({instr_mem[pc+1], instr_mem[pc]}),
         // ===== OUTPUTS =====
         // rs1, rs2, rd select bits
         .rs1(rs1),

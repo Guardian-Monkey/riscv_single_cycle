@@ -5,13 +5,13 @@
 
 
 .data
-; array:    .word 2, 5, 8, 12, 16, 23, 38, 56, 72, 91
-; length:   .word 10
-; target:   .word 23
+array:    .word 2, 5, 8, 12, 16, 23, 38, 56, 72, 91
+length:   .word 10
+target:   .word 23
 
-array:  .word 1, 2, 3, 4
-length: .word 4
-target: .word 3
+; array:  .word 1, 2, 3, 4
+; length: .word 4
+; target: .word 3
 
 .text
 main:
@@ -41,6 +41,7 @@ search_loop:
 
     ; get the value at the midpoint
     lw x6, 0(x5)
+    srli x5, x5, 2 # x5 = x5 / 4; returns x5 back to abstracted indexing
 
     ; if value at midpoint == target, end program with current index saved at register
     beq x6, x4, found
@@ -48,11 +49,11 @@ search_loop:
     ; target value is less than midpoint
     blt x4, x6, less_than
     ; target is greater than midpoint, "low" ptr = midpoint + 1
-    addi x1, x6, 1
+    addi x1, x5, 1
     jal x0, search_loop
 less_than:
     ; "high" ptr = midpoint - 1
-    addi x3, x6, -1
+    addi x3, x5, -1
     ; loop back to search_loop
     jal x0, search_loop
 
