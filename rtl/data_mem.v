@@ -19,7 +19,8 @@ module data_mem(
 
     initial begin
         // path is relative to where the simulation is ran (build directory)
-        $readmemh("../../memory/data.mem", RAM); // hex file; each line is data (byte)
+        // in other words: YOU MUST RUN SIM FROM ROOT PROJECT DIRECTORY!!!
+        $readmemh("assembler/out/data.mem", RAM); // hex file; each line is data (byte)
     end
 
     wire [12:0] data_addr;

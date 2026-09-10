@@ -50,7 +50,8 @@ module risc_v(
 
     initial begin
         // path is relative to where the simulation is ran (build directory)
-        $readmemh("../../memory/instr.mem", instr_mem); // hex file; each line is an instruction
+        // YOU MUST RUN SIM FROM ROOT PROJECT DIRECTORY!!!
+        $readmemh("assembler/out/instr.mem", instr_mem); // hex file; each line is an instruction
         pc = 14'b0; // set pc point to start of instr_mem
     end
 
