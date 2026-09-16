@@ -4,7 +4,7 @@ cmake_policy(SET CMP0074 NEW)
 # IMPORTANT!!!
 # CMAKE FILE IS INTENDED TO BE EXECUTED IN THE "systemc/unit/(the_specific_unit)", TREATING IT AS CMAKE_SOURCE_DIR
 
-project(alu_test_bench)
+project(control_unit_test_bench)
 
 find_package(verilator HINTS $ENV{VERILATOR_ROOT} ${VERILATOR_ROOT})
 if(NOT verilator_FOUND)
