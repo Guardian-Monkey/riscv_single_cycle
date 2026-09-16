@@ -1,7 +1,7 @@
-`include "control_unit.v"
-`include "alu.v"
-`include "data_mem.v"
-`include "reg_file.v"
+// `include "control_unit.v"
+// `include "alu.v"
+// `include "data_mem.v"
+// `include "reg_file.v"
 
 module risc_v(
     // synchronous clock
@@ -106,7 +106,7 @@ module risc_v(
         .branch_op(branch_op)
     );
 
-    ALU alu(
+    alu ALU(
         // ===== INPUTS =====
         // control signal
         ALU_funct,
@@ -161,7 +161,7 @@ module helper_adder(A, B, Cin, S, Cout);
     output[31:0] S;
     output Cout;
 
-    assign {Cout, S} = A + B + Cin;
+    assign {Cout, S} = {1'b0, A} + {1'b0, B} + {32'b0, Cin};
 
 endmodule
 
@@ -172,14 +172,14 @@ module branch_decoder(
     input unsigned_less_than,
     input signed_less_than,
     // enable branch decoder
-    input branch_decoder,
+    input branch_decoder_on,
     input [2:0] branch_op, // branch op, e.g. BEQ, BNE, etc.
     output reg branch_decision // branch taken, branch not taken
 );
 
     always @(*)
     begin
-        if (branch_decoder) begin
+        if (branch_decoder_on) begin
             branch_decision = 1'b0;
             case (branch_op)
                 3'b000: branch_decision =  zero_flag;          // BEQ

@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 cmake_policy(SET CMP0074 NEW)
 
-project(riscv_core)
+# IMPORTANT!!!
+# CMAKE FILE IS INTENDED TO BE EXECUTED IN THE "systemc/unit/(the_specific_unit)", TREATING IT AS CMAKE_SOURCE_DIR
+
+project(alu_test_bench)
 
 find_package(verilator HINTS $ENV{VERILATOR_ROOT} ${VERILATOR_ROOT})
 if(NOT verilator_FOUND)
@@ -19,21 +22,21 @@ find_package(Threads REQUIRED)
 find_package(SystemCLanguage QUIET)
 
 # Create a new executable target that will contain all your sources
-add_executable(riscv_proc)
-target_sources(riscv_proc
+add_executable(Vcontrol_unit_tb)
+target_sources(Vcontrol_unit_tb
 	PRIVATE
-		./sim/systemc/processor/risc_v_tb.cc
+		./control_unit_tb.cc
 )
 
-target_compile_features(riscv_proc PUBLIC cxx_std_17)
+target_compile_features(Vcontrol_unit_tb PUBLIC cxx_std_17)
 
-set_property(TARGET riscv_proc PROPERTY CXX_STANDARD ${SystemC_CXX_STANDARD})
+set_property(TARGET Vcontrol_unit_tb PROPERTY CXX_STANDARD ${SystemC_CXX_STANDARD})
 
 # Add the Verilated circuit to the target
-verilate(riscv_proc COVERAGE SYSTEMC TRACE
-  INCLUDE_DIRS "./rtl"
-  SOURCES ./rtl/risc_v.v
-  TOP_MODULE risc_v
+verilate(Vcontrol_unit_tb COVERAGE SYSTEMC TRACE
+  INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/../../../../rtl
+  SOURCES ${CMAKE_SOURCE_DIR}/../../../../rtl/control_unit.v
+  TOP_MODULE control_unit
 )
 
-verilator_link_systemc(riscv_proc)
+verilator_link_systemc(Vcontrol_unit_tb)

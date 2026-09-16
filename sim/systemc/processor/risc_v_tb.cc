@@ -3,7 +3,8 @@
 #include <verilated.h> // this includes Verilator
 #include <verilated_vcd_sc.h> // this helps systemC and Verilator to create vcd's (waveform files for GTKWave)
 
-#include "Vrisc_v.h" // the C++ representation of the verilog module
+// Include model header, generated from Verilating "risc_v.v"
+#include "Vrisc_v.h"
 
 #include <iostream>
 
@@ -23,26 +24,14 @@ int sc_main(int argc, char** argv) {
     // signals (interface the verilog module we have created)
     // the signals match the names and the data width of the verilog signals we have 
     // created in the verilog module.
-    sc_clock clk{"clk", 1, SC_NS, 0.5, 0, SC_NS, false}; // false: start clk LOW
-
-    // sc_signal<type> name;
-    sc_signal<uint32_t> RS1;
-    sc_signal<uint32_t> RS2;
-    sc_signal<uint32_t> RD;
-    sc_signal<uint32_t> ALU_FUNCT;
-    sc_signal<uint32_t> ALU_OUT;
+    // example clk: sc_clock clk("clk", sc_time(10, SC_NS), 0.5, SC_ZERO_TIME, false);
+    sc_clock clk("clk", sc_time(1, SC_NS), 0.5, SC_ZERO_TIME, false); // start clk LOW; first change is HIGH
 
     const std::unique_ptr<Vrisc_v> risc_v{new Vrisc_v{"risc_v_vcd_debug"}};
 
     // connect all the signals we have created in systemC to the verilated module
     // risc_v->name_sig(name_sig);
     risc_v->clk(clk);
-
-    risc_v->RS1(RS1);
-    risc_v->RS2(RS2);
-    risc_v->RD(RD);
-    risc_v->ALU_FUNCT(ALU_FUNCT);
-    risc_v->ALU_OUT(ALU_OUT);
 
     // start simulation and trace
     std::cout << "Vrisc_v start!" << std::endl;
@@ -64,22 +53,13 @@ int sc_main(int argc, char** argv) {
     }
 
     // ======= TESTING =======
+    // Simulate until $finish
+    const sc_core::sc_time limit(1000, sc_core::SC_NS);
 
-    sc_start(1, SC_NS);
-    // add, rd, rs1, rs2 (structure of add ops)
-    // add, x14, x9, x13
-    assert(RD.read() == 14);
-    assert(RS1.read() == 9);
-    assert(RS2.read() == 13);
-    assert(ALU_FUNCT.read() == 0); // add = 0
-
-    // now I want to check if loads are working.
-    // I'll load two values from data_mem into registers, add them, and see the output of the ALU.
-    // this tests if:
-        // data_mem is loading data.mem properly
-        // load instructions are working properly (little endian)
-        // alu is working properly
-
+    while (!Verilated::gotFinish() &&
+        sc_core::sc_time_stamp() < limit) {
+        sc_core::sc_start(1, sc_core::SC_NS);
+    }
     // to end the simulation, buffer final is called; deinitializes all the signals of our buffer module
     risc_v->final();
 

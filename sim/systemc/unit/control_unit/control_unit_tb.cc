@@ -39,15 +39,14 @@ int sc_main(int argc, char** argv) {
     sc_signal<uint32_t> mux_reg; // [1:0]
     sc_signal<bool> WE_reg_file;
     sc_signal<bool> WE_data_mem;
-    sc_signal<uint32_t> mux_ALU2; // [1:0]s
+    sc_signal<uint32_t> mux_ALU2; // [1:0]
     sc_signal<bool> mux_ALU1;
     sc_signal<uint32_t> ALU_funct; // [3:0]
     sc_signal<uint32_t> mem_size; // [1:0]
     sc_signal<bool> sign_val;
     // branch logic flags
-    sc_signal<bool> zero_flag;
-    sc_signal<bool> unsigned_less_than;
-    sc_signal<bool> signed_less_than;
+    sc_signal<bool> branch_decoder;
+    sc_signal<uint32_t> branch_op; // [2:0]
 
     // instantiate the C++ representation of our verilog module
     // Vcontrol_unit: verilog module name prefixed with V; verilator naming convention
@@ -65,7 +64,6 @@ int sc_main(int argc, char** argv) {
     // imm
     control_unit->imm(imm);
     // control signals
-    control_unit->mux_adder(mux_adder);
     control_unit->mux_PC(mux_PC);
     control_unit->mux_reg(mux_reg);
     control_unit->WE_reg_file(WE_reg_file);
@@ -76,9 +74,8 @@ int sc_main(int argc, char** argv) {
     control_unit->mem_size(mem_size);
     control_unit->sign_val(sign_val);
     // branch logic flags
-    control_unit->zero_flag(zero_flag);
-    control_unit->unsigned_less_than(unsigned_less_than);
-    control_unit->signed_less_than(signed_less_than);
+    control_unit->branch_decoder(branch_decoder);
+    control_unit->branch_op(branch_op);
 
     // start simulation and trace
     std::cout << "Vcontrol_unit start!" << std::endl;
@@ -413,64 +410,65 @@ int sc_main(int argc, char** argv) {
     // 0 0 101010 1010 = 682, but since msb of 0 is missing, number is actually = 1364
     instruction = (0b1100011 <<0) | (0b10100 <<7) | (0b000 <<12) | (0b00010 <<15) | (0b00001 <<20) | (0b0101010 <<25);
     instr.write(instruction);
-    zero_flag.write(1); // zero flag is set, therefore branch
     sc_start(1, SC_NS);
     
     assert(ALU_funct.read() == 1); // SUB
     assert(rs1.read() == 2);
     assert(rs2.read() == 1);
     assert(imm.read() == 1364);
-    assert(mux_adder.read() == 1); // indicates branch will be taken
+    assert(branch_decoder.read() == 1); // branch decoder active
+    assert(branch_op.read() == 0); // branch op == 0b000 for instr bits [14:12]
 
     // BNE INSTRUCTION
     // opcode, imm[4:1|11], funct3, rs1, rs2, imm[12|10:5]
     // 0 0 101010 1010 = 682, but since msb of 0 is missing, number is actually = 1364
     instruction = (0b1100011 <<0) | (0b10100 <<7) | (0b001 <<12) | (0b00010 <<15) | (0b00001 <<20) | (0b0101010 <<25);
     instr.write(instruction);
-    zero_flag.write(0); // zero flag is not set, therefore branch
     sc_start(1, SC_NS);
 
-    assert(mux_adder.read() == 1); // indicates branch will be taken
+    assert(branch_decoder.read() == 1); // branch decoder active
+    assert(branch_op.read() == 1); // branch op == 0b001 for instr bits [14:12]
+
 
     // BLT INSTRUCTION
     // opcode, imm[4:1|11], funct3, rs1, rs2, imm[12|10:5]
     // 0 0 101010 1010 = 682, but since msb of 0 is missing, number is actually = 1364
     instruction = (0b1100011 <<0) | (0b10100 <<7) | (0b100 <<12) | (0b00010 <<15) | (0b00001 <<20) | (0b0101010 <<25);
     instr.write(instruction);
-    signed_less_than.write(1); // signed less than true, therefore branch
     sc_start(1, SC_NS);
 
-    assert(mux_adder.read() == 1); // indicates branch will be taken
+    assert(branch_decoder.read() == 1); // branch decoder active
+    assert(branch_op.read() == 4); // branch op == 0b100 for instr bits [14:12]
 
     // BGE INSTRUCTION
     // opcode, imm[4:1|11], funct3, rs1, rs2, imm[12|10:5]
     // 0 0 101010 1010 = 682, but since msb of 0 is missing, number is actually = 1364
     instruction = (0b1100011 <<0) | (0b10100 <<7) | (0b101 <<12) | (0b00010 <<15) | (0b00001 <<20) | (0b0101010 <<25);
     instr.write(instruction);
-    signed_less_than.write(0); // signed less than false, therefore branch
     sc_start(1, SC_NS);
 
-    assert(mux_adder.read() == 1); // indicates branch will be taken
+    assert(branch_decoder.read() == 1); // branch decoder active
+    assert(branch_op.read() == 5); // branch op == 0b101 for instr bits [14:12]
 
     // BLTU INSTRUCTION
     // opcode, imm[4:1|11], funct3, rs1, rs2, imm[12|10:5]
     // 0 0 101010 1010 = 682, but since msb of 0 is missing, number is actually = 1364
     instruction = (0b1100011 <<0) | (0b10100 <<7) | (0b110 <<12) | (0b00010 <<15) | (0b00001 <<20) | (0b0101010 <<25);
     instr.write(instruction);
-    unsigned_less_than.write(1); // unsigned less than true, therefore branch
     sc_start(1, SC_NS);
 
-    assert(mux_adder.read() == 1); // indicates branch will be taken
+    assert(branch_decoder.read() == 1); // branch decoder active
+    assert(branch_op.read() == 6); // branch op == 0b110 for instr bits [14:12]
 
     // BGEU INSTRUCTION
     // opcode, imm[4:1|11], funct3, rs1, rs2, imm[12|10:5]
     // 0 0 101010 1010 = 682, but since msb of 0 is missing, number is actually = 1364
     instruction = (0b1100011 <<0) | (0b10100 <<7) | (0b111 <<12) | (0b00010 <<15) | (0b00001 <<20) | (0b0101010 <<25);
     instr.write(instruction);
-    unsigned_less_than.write(0); // unsigned less than false, therefore branch
     sc_start(1, SC_NS);
 
-    assert(mux_adder.read() == 1); // indicates branch will be taken
+    assert(branch_decoder.read() == 1); // branch decoder active
+    assert(branch_op.read() == 7); // branch op == 0b111 for instr bits [14:12]
 
     // ===== BRANCH TESTING: FINISH; ALL TESTS PASSED =====
 

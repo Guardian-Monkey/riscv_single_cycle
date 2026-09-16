@@ -1,4 +1,4 @@
-module ALU(
+module alu(
     input [3:0] ALU_funct, // control signal; tells ALU what function to perform
     input [31:0] in1,
     input [31:0] in2,
@@ -77,7 +77,13 @@ module adder(A, B, Cin, S, Cout);
     output[31:0] S;
     output Cout;
 
-    assign {Cout, S} = A + B + Cin;
+    /*
+        Some notes for myself to refer to, since this syntax is a useful shortcut:
+        * The LHS expects 33 bits: 1 for Cout, and 32 for S
+        * The RHS extends A & B by 1 bit to adhere to this rule, and Cin by 32 bits for the same
+          reason. This saved me the headache of creating a ripple carry adder, or a special adder.
+    */
+    assign {Cout, S} = {1'b0, A} + {1'b0, B} + {32'b0, Cin};
 
 endmodule
 
