@@ -1,1 +1,0 @@
-/opt/homebrew/bin/cmake;-E;env;VERILATOR_ROOT=/opt/verilator;/opt/verilator/bin/verilator_bin;--compiler;clang;--prefix;Vrisc_v;--Mdir;/Users/paulitoad/Desktop/riscv-sc/test_benches/processor/build/CMakeFiles/Vrisc_v_tb.dir/Vrisc_v.dir;--make;json;--coverage;--sc;--trace-vcd;risc_v.v

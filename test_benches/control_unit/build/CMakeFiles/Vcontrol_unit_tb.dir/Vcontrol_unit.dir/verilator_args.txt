@@ -1,1 +1,0 @@
-/opt/homebrew/bin/cmake;-E;env;VERILATOR_ROOT=/opt/verilator;/opt/verilator/bin/verilator_bin;--compiler;clang;--prefix;Vcontrol_unit;--Mdir;/Users/paulitoad/Desktop/riscv-sc/test_benches/control_unit/build/CMakeFiles/Vcontrol_unit_tb.dir/Vcontrol_unit.dir;--make;json;--coverage;--sc;--trace-vcd;control_unit.v

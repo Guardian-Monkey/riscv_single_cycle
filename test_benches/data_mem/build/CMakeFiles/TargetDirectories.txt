@@ -1,3 +1,0 @@
-/Users/paulitoad/Desktop/riscv-sc/test_benches/data_mem/build/CMakeFiles/Vdata_mem_tb.dir
-/Users/paulitoad/Desktop/riscv-sc/test_benches/data_mem/build/CMakeFiles/edit_cache.dir
-/Users/paulitoad/Desktop/riscv-sc/test_benches/data_mem/build/CMakeFiles/rebuild_cache.dir

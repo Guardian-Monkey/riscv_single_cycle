@@ -1,1 +1,0 @@
-/opt/homebrew/bin/cmake;-E;env;VERILATOR_ROOT=/opt/verilator;/opt/verilator/bin/verilator_bin;--compiler;clang;--prefix;Vdata_mem;--Mdir;/Users/paulitoad/Desktop/riscv-sc/test_benches/data_mem/build/CMakeFiles/Vdata_mem_tb.dir/Vdata_mem.dir;--make;json;--coverage;--sc;--trace-vcd;data_mem.v

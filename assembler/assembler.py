@@ -1,4 +1,5 @@
 import sys # for command line arguments
+from pathlib import Path # this is for getting the absolute path to the script dir's parent dir
 
 # OPCODES
 OP     = 0b0110011
@@ -226,8 +227,11 @@ def main():
     data_mem, instr_mem = assemble(formatted, symbol_table)
 
     # write machine code (hex) into appropriate output file
-    data_out  = "./../memory/data.mem"
-    instr_out = "./../memory/instr.mem"
+    # get the absolute path to the parent dir of the script
+    script_dir = Path(__file__).resolve().parent
+    # write the paths to data.mem and instr.mem; this uses Path's / operator.
+    data_out  = script_dir / "out" / "data.mem"
+    instr_out = script_dir / "out" / "instr.mem"
     write_data(data_mem, data_out) # write data mem as hex into output file
     write_instr(instr_mem, instr_out) # write instr mem as hex into output file
     return 0
